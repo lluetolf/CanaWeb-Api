@@ -1,0 +1,4 @@
+runtime: java11
+env: standard
+
+service: 'canaweb-api'

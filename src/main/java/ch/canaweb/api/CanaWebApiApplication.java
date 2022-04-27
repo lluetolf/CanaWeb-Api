@@ -1,0 +1,14 @@
+package ch.canaweb.api;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class CanaWebApiApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(CanaWebApiApplication.class, args);
+
+    }
+
+}

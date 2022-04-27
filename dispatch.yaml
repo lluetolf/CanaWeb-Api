@@ -1,0 +1,10 @@
+
+dispatch:
+  - url: 'api.canaweb.app/*'
+    service: canaweb-api
+
+  - url: 'canaweb.app/*'
+    service: canaweb-ui
+
+  - url: 'www.canaweb.app/*'
+    service: canaweb-ui
