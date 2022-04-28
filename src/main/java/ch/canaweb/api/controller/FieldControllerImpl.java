@@ -13,7 +13,6 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 
-//"https://canaweb-ui-dot-dev-canaweb-firestore.uc.r.appspot.com"
 @RestController
 public class FieldControllerImpl implements FieldService {
 

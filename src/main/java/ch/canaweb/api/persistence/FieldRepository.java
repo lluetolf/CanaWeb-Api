@@ -29,6 +29,11 @@ public class FieldRepository {
     }
 
     public Field add(Field field) {
+        Field existingField = this.getField(field.fieldId);
+        if (existingField != null) {
+            throw
+        }
+
         try {
             ApiFuture<DocumentReference> addedFieldRef = collection.add(field);
             addedFieldRef.get();
@@ -63,15 +68,14 @@ public class FieldRepository {
     public Field getField(String id) {
         ApiFuture<QuerySnapshot> query =
                 this.collection.whereEqualTo("id", id).get();
-
         try {
             QuerySnapshot querySnapshot = query.get();
             return querySnapshot.getDocuments().get(0).toObject(Field.class);
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            return DataNotFound("No Field found for id " + id)
         }
 
-        return null;
     }
 
 }
