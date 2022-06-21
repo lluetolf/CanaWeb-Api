@@ -25,12 +25,6 @@ public class FieldControllerImpl implements FieldService {
         this.repository = repository;
     }
 
-
-    @GetMapping("/hello")
-    public Mono<String> hello() {
-        return Mono.just("Hello World 3.");
-    }
-
     @Override
     public Mono<String> getVersion() {
         return Mono.just("V1.0");
@@ -38,8 +32,8 @@ public class FieldControllerImpl implements FieldService {
 
     @Override
     public Mono<Field> getField(String fieldId) {
-        Field field = this.repository.getField(fieldId);
-        return Mono.just(field);
+        this.logger.info("FieldId: " + fieldId);
+        return this.repository.findByFieldId(fieldId).log();
     }
 
     @Override
@@ -49,19 +43,37 @@ public class FieldControllerImpl implements FieldService {
 
     @Override
     public Flux<Field> getAllFields() {
-        List<Field> fields = this.repository.getAllFields();
-        return Flux.fromIterable(fields);
+        try {
+            return this.repository.findAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
     public Mono<Field> createField(Field field) {
-        this.repository.add(field);
-        return Mono.just(field);
+        return this.repository.findByFieldId(field.getFieldId())
+                .log()
+                .flatMap(a -> {
+                    if(a == null) {
+                        this.logger.info("Creating new field. ID:" + field.getFieldId());
+                        return this.repository.save(field);
+                    } else {
+                        this.logger.info("Field already exists, consider updating. ID: " + field.getFieldId());
+                        return Mono.error(new Exception("No Field with FieldID" + field.getFieldId()));
+                    }
+                }).log();
     }
 
     @Override
-    public Mono<Field> updateField(Field body) {
-        return null;
+    public Mono<Field> updateField(Field field) {
+        return this.repository.findByFieldId(field.getFieldId())
+                .flatMap(a -> {
+                    field.setId(a.getId());
+                    return this.repository.save(field);
+                })
+                .onErrorResume(IllegalArgumentException.class, e -> {throw e;});
     }
 
     @Override

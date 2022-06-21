@@ -19,7 +19,8 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http.cors().configurationSource(corsConfiguration())
-                .and().authorizeExchange().anyExchange().authenticated()
+                .and().csrf(csrf -> csrf.disable())
+                .authorizeExchange().anyExchange().authenticated()
                 .and().oauth2ResourceServer().jwt()
                 .and().and().build();
     }

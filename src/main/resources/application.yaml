@@ -4,8 +4,12 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com
+  cloud:
+    gcp:
+      firestore:
+        enabled: true
+        project-id: dev-canaweb-firestore
 
-logging:
   level:
     org:
       springframework:
@@ -13,3 +17,5 @@ logging:
           cors:
             reactive:
               DefaultCorsProcessor: DEBUG
+
+
