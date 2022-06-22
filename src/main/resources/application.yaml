@@ -8,6 +8,7 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com
+
   cloud:
     gcp:
       firestore:
@@ -30,13 +31,38 @@ app:
   name: CanaWeb-API
   description: ${app.name} is running in LOCAL.
 
+
+---
+spring:
+  config:
+    activate:
+      on-profile: uat
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com
+
+app:
+  name: CanaWeb-API
+  description: ${app.name} is running in UAT.
+
+
+
 ---
 spring:
   config:
     activate:
       on-profile: prod
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com
+
 app:
   name: CanaWeb-API
   description: ${app.name} is running in PROD.
+
 
 

@@ -1,5 +1,6 @@
 package ch.canaweb.api.controller;
 
+import ch.canaweb.api.error.BaseHttpException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +19,12 @@ public class HelloWorld {
     }
 
     @GetMapping(path = "/user")
-    public String test(Principal principal) {
-        return principal.getName();
+    public Mono<String>  test(Principal principal) {
+        if(principal != null) {
+            return Mono.just(principal.getName());
+        } else {
+            return Mono.error(new BaseHttpException("Security Principle not set.", "No details"));
+        }
     }
 
 }

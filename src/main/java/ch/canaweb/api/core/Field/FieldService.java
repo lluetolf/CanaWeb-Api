@@ -1,11 +1,12 @@
 package ch.canaweb.api.core.Field;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@RequestMapping("/field")
+@RequestMapping("/api/field")
 public interface FieldService {
 
     @GetMapping(
@@ -46,7 +47,7 @@ public interface FieldService {
     Mono<Field> updateField(@RequestBody Field body);
 
     @DeleteMapping(
-            path = "/{fieldId}")
+            path = "/id/{fieldId}")
     @ResponseStatus(HttpStatus.OK)
-    Mono<Void> deleteField(@PathVariable int fieldId);
+    Mono<Void> deleteField(@PathVariable String fieldId);
 }
