@@ -52,6 +52,7 @@ public class FieldControllerImpl implements FieldService {
                     .onErrorMap(
                     x -> {
                         this.logger.error("ERROR:" + String.valueOf(x));
+                        this.logger.error("ERROR:" + x.toString());
                         return new BaseHttpException(x.getMessage(), "");
                     });
         } catch (Exception e) {
@@ -64,19 +65,28 @@ public class FieldControllerImpl implements FieldService {
     public Mono<Field> createField(Field field) {
         this.logger.info("createField: " + field.getFieldId());
 
-        Mono<Field> m = this.repository.findFieldByName(field.getName())
-                .hasElement()
-                .flatMap(x -> {
-                    if (x) {
-                        this.logger.info("Field exists already.");
-                        return Mono.error(new DuplicateHttpException("There is already a Field with name: " + field.getName(), "no details"));
-                    } else {
-                        this.logger.info("Create Field.");
-                        return this.repository.save(field);
-                    }
-                });
+        try {
+            return this.repository.findFieldByName(field.getName())
+                    .hasElement()
+                    .flatMap(x -> {
+                        if (x) {
+                            this.logger.info("Field exists already.");
+                            return Mono.error(new DuplicateHttpException("There is already a Field with name: " + field.getName(), "no details"));
+                        } else {
+                            this.logger.info("Create Field.");
+                            return this.repository.save(field);
+                        }
+                    }).onErrorResume(Exception.class, e -> {
+                        this.logger.error("ERROR1: " + e.getMessage());
+                        e.printStackTrace();
+                        return Mono.error(new BaseHttpException("Error", "failed"));
+                    });
+        } catch (Exception e) {
+            this.logger.error("ERROR 2CAUGHT: "  + e.getMessage());
+            e.printStackTrace();
+        }
 
-        return m;
+        return Mono.error( new BaseHttpException("Error", "failed"));
 
     }
 

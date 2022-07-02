@@ -1,5 +1,8 @@
 package ch.canaweb.api.core.Field;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.annotation.DocumentId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,17 +10,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.cloud.gcp.data.firestore.Document;
 
+import java.io.Serializable;
 
-import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collectionName = "Field")
-public class Field {
-
+public class Field implements Serializable {
     @DocumentId
     private String id;
 
@@ -31,11 +32,13 @@ public class Field {
 
     private double cultivatedArea;
 
-    private LocalDate acquisitionDate;
+    @JsonSerialize(using = FireStoreSerializer.class)
+    @JsonDeserialize(using = FireStoreDeserializer.class)
+    private Timestamp acquisitionDate;
 
     private String ingenioId;
 
-    private LocalDate lastUpdated;
 
-    private Date date;
+    //    private Timestamp lastUpdated;
+
 }
