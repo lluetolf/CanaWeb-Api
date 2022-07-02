@@ -23,6 +23,13 @@ public abstract class AbstracHttpException extends RuntimeException {
         this.details = details;
     }
 
+    public AbstracHttpException() {
+        super();
+        this.timestamp = new Date();
+        this.message = "N/A";
+        this.details = "N/A";
+    }
+
     public Date getTimestamp() {
         return timestamp;
     }
@@ -37,7 +44,7 @@ public abstract class AbstracHttpException extends RuntimeException {
 
     public Map<String, String> getMessageBody() {
         return new HashMap<String, String> (
-                Map.of("date", this.timestamp.toString(),
+                Map.of("date", this.timestamp == null ? "UNKNOWN" : this.timestamp.toString(),
                         "message", this.message,
                         "details", this.details));
     }
