@@ -40,7 +40,7 @@ public interface FieldService {
     @ResponseStatus(HttpStatus.CREATED)
     Mono<Field> createField(@RequestBody Field body);
 
-    @PatchMapping(
+    @PutMapping(
             path = "",
             consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)

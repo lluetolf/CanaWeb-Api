@@ -6,6 +6,7 @@ import ch.canaweb.api.error.BaseHttpException;
 import ch.canaweb.api.error.DuplicateHttpException;
 import ch.canaweb.api.error.EntityDoesNotExistHttpException;
 import ch.canaweb.api.persistence.FieldRepository;
+import com.google.cloud.Timestamp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +75,7 @@ public class FieldControllerImpl implements FieldService {
                             return Mono.error(new DuplicateHttpException("There is already a Field with name: " + field.getName(), "no details"));
                         } else {
                             this.logger.info("Create Field.");
+                            field.setLastUpdated(Timestamp.now());
                             return this.repository.save(field);
                         }
                     }).onErrorResume(Exception.class, e -> {
@@ -92,9 +94,18 @@ public class FieldControllerImpl implements FieldService {
 
     @Override
     public Mono<Field> updateField(Field field) {
-        return this.repository.findByFieldId(field.getFieldId())
-                .flatMap(a -> {
-                    return this.repository.save(field);
+        this.logger.info("updateField: " + field.getFieldId());
+
+        return this.repository.findById(field.getId())
+                .hasElement()
+                .flatMap(x -> {
+                    if(x) {
+                        field.setLastUpdated(Timestamp.now());
+                        return this.repository.save(field);
+                    } else {
+                        this.logger.info("Can't update field for none existing id: " + field.getId());
+                        return Mono.error(new BaseHttpException("Can't update field for none existing id.", "ID: " + field.getId()));
+                    }
                 })
                 .onErrorResume(IllegalArgumentException.class, e -> {throw e;});
     }

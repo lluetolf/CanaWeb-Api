@@ -1,5 +1,7 @@
 package ch.canaweb.api.core.Field;
 
+import ch.canaweb.api.persistence.helper.FireStoreDeserializer;
+import ch.canaweb.api.persistence.helper.FireStoreSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.cloud.Timestamp;
@@ -38,7 +40,8 @@ public class Field implements Serializable {
 
     private String ingenioId;
 
-
-    //    private Timestamp lastUpdated;
+    @JsonSerialize(using = FireStoreSerializer.class)
+    @JsonDeserialize(using = FireStoreDeserializer.class)
+    private Timestamp lastUpdated;
 
 }

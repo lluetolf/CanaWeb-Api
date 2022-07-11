@@ -60,9 +60,18 @@ spring:
         jwt:
           jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com
 
+  cloud:
+    gcp:
+      firestore:
+        enabled: true
+        project-id: prod-canaweb-firestore
+
 app:
   name: CanaWeb-API
   description: ${app.name} is running in PROD.
+
+server:
+  port: 8555
 
 
 

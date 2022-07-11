@@ -1,4 +1,4 @@
-package ch.canaweb.api.core.Field;
+package ch.canaweb.api.persistence.helper;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
