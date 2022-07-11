@@ -1,11 +1,14 @@
 package ch.canaweb.api;
 
 import ch.canaweb.api.core.Field.Field;
+import ch.canaweb.api.error.AbstracHttpException;
 import ch.canaweb.api.persistence.FieldRepository;
 import com.google.cloud.Timestamp;
 import net.datafaker.Faker;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,7 @@ import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 @SpringBootTest
 @AutoConfigureWebTestClient()
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class FieldControllerTest {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -50,8 +54,8 @@ public class FieldControllerTest {
         );
     }
 
-    @Order(1)
     @Test
+    @Order(1)
     void getAllFields() {
         List<Field> fields = this.webClient.get()
                 .uri("/api/field/all")
@@ -65,11 +69,12 @@ public class FieldControllerTest {
         this.logger.info("Found " + fields.size());
     }
 
-    @Order(2)
     @Test
+    @Order(2)
     void createField() {
         Field f = generateRandomField();
         Mono<Field> new_field = Mono.just(f);
+        FieldControllerTest.createdField = f;
 
         Field field = this.webClient
                 .post()
@@ -83,12 +88,33 @@ public class FieldControllerTest {
                 .expectBody(Field.class)
                 .returnResult().getResponseBody();
 
-        FieldControllerTest.createdField = field;
+
         this.logger.info(f.toString());
     }
 
-    @Order(3)
     @Test
+    @Order(3)
+    void createDuplicateField() {
+        Field f = FieldControllerTest.createdField;
+        f.setId(null);
+
+        this.webClient
+                .post()
+                .uri("/api/field")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(f), Field.class)
+                .exchange()
+                .expectStatus().is4xxClientError()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.type").isEqualTo("DuplicateHttpException")
+                .jsonPath("$.message").isNotEmpty()
+                .jsonPath("$.details").isEqualTo("no details");
+    }
+
+    @Test
+    @Order(3)
     void getAllFields2() {
         List<Field> fields = this.webClient.get()
                 .uri("/api/field/all")
@@ -101,8 +127,8 @@ public class FieldControllerTest {
         assertTrue("Field got added successfully.", fields.size() > FieldControllerTest.fieldCnt);
     }
 
-    @Order(3)
     @Test
+    @Order(3)
     void getByNameAndUpdate() {
         String url = "/api/field/name/" + FieldControllerTest.createdField.getName();
         Field field = this.webClient.get()

@@ -46,6 +46,7 @@ public abstract class AbstracHttpException extends RuntimeException {
         return new HashMap<String, String> (
                 Map.of("date", this.timestamp == null ? "UNKNOWN" : this.timestamp.toString(),
                         "message", this.message,
-                        "details", this.details));
+                        "details", this.details,
+                        "type", this.getClass().getSimpleName()));
     }
 }

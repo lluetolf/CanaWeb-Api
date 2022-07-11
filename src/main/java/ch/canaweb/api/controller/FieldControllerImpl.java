@@ -76,12 +76,10 @@ public class FieldControllerImpl implements FieldService {
                         } else {
                             this.logger.info("Create Field.");
                             field.setLastUpdated(Timestamp.now());
-                            return this.repository.save(field);
+                            return this.repository.save(field).log();
                         }
                     }).onErrorResume(Exception.class, e -> {
-                        this.logger.error("ERROR1: " + e.getMessage());
-                        e.printStackTrace();
-                        return Mono.error(new BaseHttpException("Error", "failed"));
+                        return Mono.error(e);
                     });
         } catch (Exception e) {
             this.logger.error("ERROR 2CAUGHT: "  + e.getMessage());
