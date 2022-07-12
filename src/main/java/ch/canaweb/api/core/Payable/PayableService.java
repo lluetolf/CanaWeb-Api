@@ -10,57 +10,52 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+@RequestMapping("/api/payable")
 public interface PayableService {
 
     @GetMapping(
-            value    = "/payable/{payableId}",
+            path = "/version",
             produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    Mono<Payable> getPayable(@PathVariable int payableId);
+    Mono<String> getVersion();
 
     @GetMapping(
-            value    = "/payable",
+            value    = "",
             produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    Flux<Payable> getPayables(@RequestParam Optional<Integer> fieldId);
-
-    @DeleteMapping(
-            path = "/payable/{payableId}")
-    @ResponseStatus(HttpStatus.OK)
-    Mono<Void> deletePayable(@PathVariable int payableId);
-
-    @DeleteMapping(
-            value    = "/payable",
-            produces = "application/json")
-    @ResponseStatus(HttpStatus.OK)
-    Mono<Void> deleteAllPayablesForField(@RequestParam("fieldId") int fieldId);
+    Mono<Payable> getPayable(@RequestParam(required = true) String payableId);
 
     @GetMapping(
-            value    = "/payable/between",
+            value    = "/all",
+            produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    Flux<Payable> getAllPayables();
+
+    @GetMapping(
+            value    = "/between",
             produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     Flux<Payable> getAllPayablesBetween(
             @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-            @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to);
+            @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
+    );
 
     @PostMapping(
-            path = "/payable",
+            path = "",
             consumes = "application/json",
             produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     Mono<Payable> createPayable(@RequestBody Payable body);
 
-    @PostMapping(
-            path = "/payables",
-            consumes = "application/json",
-            produces = "application/json")
-    @ResponseStatus(HttpStatus.CREATED)
-    Flux<Payable> createPayables(List<Payable> payables);
-
-    @PatchMapping(
-            path = "/payable",
+    @PutMapping(
+            path = "",
             consumes = "application/json",
             produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     Mono<Payable> updatePayable(@RequestBody Payable body);
+
+    @DeleteMapping(
+            path = "/payable/{payableId}")
+    @ResponseStatus(HttpStatus.OK)
+    Mono<Void> deletePayable(@PathVariable int payableId);
 }

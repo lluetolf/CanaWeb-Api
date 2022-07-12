@@ -42,12 +42,13 @@ public interface FieldService {
 
     @PutMapping(
             path = "",
-            consumes = "application/json", produces = "application/json")
+            consumes = "application/json",
+            produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     Mono<Field> updateField(@RequestBody Field body);
 
     @DeleteMapping(
-            path = "/id/{fieldId}")
+            path = "/name/{fieldName}")
     @ResponseStatus(HttpStatus.OK)
-    Mono<Void> deleteField(@PathVariable String fieldId);
+    Mono<Void> deleteField(@PathVariable String fieldName);
 }

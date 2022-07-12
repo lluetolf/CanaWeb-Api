@@ -86,8 +86,7 @@ public class FieldControllerImpl implements FieldService {
             e.printStackTrace();
         }
 
-        return Mono.error( new BaseHttpException("Error", "failed"));
-
+        return Mono.error(new BaseHttpException("Error", "failed"));
     }
 
     @Override
@@ -109,12 +108,12 @@ public class FieldControllerImpl implements FieldService {
     }
 
     @Override
-    public Mono<Void> deleteField(String fieldId) {
-        this.logger.info("deleteField: " + fieldId);
+    public Mono<Void> deleteField(String fieldName) {
+        this.logger.info("deleteField: " + fieldName);
 
-        Mono<Void> r =  this.repository.findByFieldId(fieldId)
+        return this.repository.findFieldByName(fieldName)
                 .doOnNext(x -> {
-                    this.logger.info("Attempting to delete: " + fieldId);
+                    this.logger.info("Attempting to delete: " + fieldName);
                     this.logger.info(String.valueOf(x));
                 })
                 .flatMap(
@@ -125,15 +124,9 @@ public class FieldControllerImpl implements FieldService {
                 .onErrorMap(
                 x -> {
                     this.logger.info(String.valueOf(x));
-                    return new EntityDoesNotExistHttpException("No Field with id exists: " + fieldId, "");
+                    return new EntityDoesNotExistHttpException("No Field with id exists: " + fieldName, "");
                 }
         );
-
-        return r;
     }
 
-//    @ExceptionHandler(NullPointerException.class)
-//    public ResponseEntity<String> onException(NullPointerException e) {
-//        return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).build();
-//    }
 }

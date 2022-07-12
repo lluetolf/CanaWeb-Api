@@ -40,6 +40,7 @@ public class FieldControllerTest {
     @Autowired
     private FieldRepository repository;
 
+
     private Field generateRandomField() {
         return new Field(
                 null,
@@ -52,6 +53,14 @@ public class FieldControllerTest {
                 this.faker.random().hex(),
                 Timestamp.now()
         );
+    }
+
+    @Test
+    void hello() {
+        this.webClient.get()
+                .uri("/hello")
+                .exchange()
+                .expectStatus().is2xxSuccessful();
     }
 
     @Test
@@ -124,7 +133,7 @@ public class FieldControllerTest {
                 .expectBodyList(Field.class)
                 .returnResult().getResponseBody();
 
-        assertTrue("Field got added successfully.", fields.size() > FieldControllerTest.fieldCnt);
+        assertTrue("Field got added successfully.", fields.size() == FieldControllerTest.fieldCnt + 1);
     }
 
     @Test
@@ -156,21 +165,37 @@ public class FieldControllerTest {
         assertTrue("IngenioId updated", "NEW_INGENIO_ID".equals(updatedField.getIngenioId()));
     }
 
+    @Test
+    @Order(4)
+    void deleteField() {
+        Field f = FieldControllerTest.createdField;
+        f.setId(null);
+
+        String url = "/api/field/name/" + "New_Name";
+        this.webClient.delete()
+                .uri(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().is2xxSuccessful();
+
+    }
 
 
     @Test
-    void hello() {
-        this.webClient.get()
-                .uri("/hello")
+    @Order(5)
+    void getAllFields3() {
+        List<Field> fields = this.webClient.get()
+                .uri("/api/field/all")
+                .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().is2xxSuccessful();
+                .expectStatus().is2xxSuccessful()
+                .expectBodyList(Field.class)
+                .returnResult().getResponseBody();
+
+        assertTrue("Field got deleted successfully.", fields.size() == FieldControllerTest.fieldCnt);
     }
 
-    @Test
-    void user() {
-        this.webClient.get()
-                .uri("/api/user")
-                .exchange()
-                .expectStatus().is2xxSuccessful();
-    }
+
+
+
 }
