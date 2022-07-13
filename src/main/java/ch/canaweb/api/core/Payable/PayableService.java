@@ -35,9 +35,9 @@ public interface PayableService {
             value    = "/between",
             produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    Flux<Payable> getAllPayablesBetween(
+    Mono<List<Payable>>  getAllPayablesBetween(
             @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-            @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
+            @RequestParam("until") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate until
     );
 
     @PostMapping(

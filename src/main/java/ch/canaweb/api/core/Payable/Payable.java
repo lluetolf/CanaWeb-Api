@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.cloud.gcp.data.firestore.Document;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @Builder
@@ -21,7 +22,7 @@ import java.io.Serializable;
 @Document(collectionName = "Payable")
 public class Payable implements Serializable {
     @DocumentId
-    private int payableId;
+    private String payableId;
 
     @JsonSerialize(using = FireStoreSerializer.class)
     @JsonDeserialize(using = FireStoreDeserializer.class)
@@ -33,7 +34,7 @@ public class Payable implements Serializable {
 
     private int documentId;
 
-    private int fieldId;
+    private List<String> fieldId;
 
     private String category;
 
