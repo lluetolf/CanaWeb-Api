@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -29,26 +31,29 @@ class PayableControllerImplTest {
 
     private Faker faker = new Faker();
 
+    private List<Payable> allPayables;
+
     @Autowired
     private WebTestClient webClient;
 
     @Autowired
     private PayableRepository repository;
 
+
     private List<Payable> createBaseSet() {
         ArrayList<Payable> payables = new ArrayList<>();
 
         for (int i = 0; i < faker.random().nextInt(3, 12); i++)
-            payables.add(createPayable());
+            payables.add(generatePayable());
 
         return payables;
     }
 
-    private Payable createPayable() {
+    private Payable generatePayable() {
         int secondsPerYear = 365*24*60*60;
         long today = 1657639148 - secondsPerYear;
         return new Payable(
-                null,
+                this.faker.random().hex(),
                 Timestamp.ofTimeSecondsAndNanos(today + faker.random().nextInt(0, secondsPerYear), 0),
                 faker.random().nextDouble(1657639148, 10000),
                 faker.random().nextInt(0, 100),
@@ -67,7 +72,8 @@ class PayableControllerImplTest {
     void setUp() {
         this.logger.info("Setup");
         this.repository.deleteAll().block();
-        this.repository.saveAll(createBaseSet()).blockLast();
+        this.allPayables = createBaseSet();
+        this.repository.saveAll(this.allPayables).blockLast();
     }
 
     @AfterAll
@@ -87,14 +93,38 @@ class PayableControllerImplTest {
         assertTrue("V1.0".equals(version), "Version is 1.0");
     }
 
+    @Test
+    void getAllPayables() {
+
+        List<Payable> payables = this.webClient.get()
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .path("/api/payable/all")
+                                .build())
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectBodyList(Payable.class)
+                .returnResult()
+                .getResponseBody();
+
+        var repoList = this.repository.findAll().collectList().block();
+        assertTrue(repoList.size() == payables.size(), "Count of all payables matche.");
+    }
+
 
     @Test
     void getAllPayablesBetween() {
 
         int offset = faker.random().nextInt(90, 365);
-        String from = LocalDate.now().minusDays(offset).format(DateTimeFormatter.ISO_DATE);
-        String until = LocalDate.now().minusDays(offset - 90).format(DateTimeFormatter.ISO_DATE);
-        this.logger.info("Get: " + from + " until " +until);
+
+        LocalDate fromDate = LocalDate.now().minusDays(offset);
+        LocalDate untilDate = LocalDate.now().minusDays(offset - 90);
+        String from = fromDate.format(DateTimeFormatter.ISO_DATE);
+        String until = untilDate.format(DateTimeFormatter.ISO_DATE);
+        Timestamp fromTS = Timestamp.of(java.sql.Timestamp.valueOf(fromDate.atStartOfDay()));
+        Timestamp untilTS = Timestamp.of(java.sql.Timestamp.valueOf(untilDate.atStartOfDay()));
+        this.logger.info("Get: " + from + " until " + until);
 
         List<Payable> payables = this.webClient.get()
                 .uri(uriBuilder ->
@@ -108,5 +138,24 @@ class PayableControllerImplTest {
                 .expectBodyList(Payable.class)
                 .returnResult()
                 .getResponseBody();
+
+        var repoList = this.repository.findByTransactionDateGreaterThanEqualAndTransactionDateLessThanEqual(fromTS, untilTS).collectList().block();
+        assertTrue(repoList.size() == payables.size(), "Count of payables between Dates matche.");
+    }
+
+    @Test
+    void createPayable() {
+        Payable newPayable = generatePayable();
+        this.logger.info("Create Payable: " + newPayable.getPayableId());
+
+        Payable returned = this.webClient.post()
+                .uri("/api/payable")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(newPayable), Payable.class)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(Payable.class)
+                .returnResult().getResponseBody();
     }
 }

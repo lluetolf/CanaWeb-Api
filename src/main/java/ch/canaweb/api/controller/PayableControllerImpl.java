@@ -35,16 +35,21 @@ public class PayableControllerImpl implements PayableService {
 
     @Override
     public Mono<Payable> getPayable(String payableId) {
-        return null;
+        this.logger.info(String.format("%1$s(%2$s)", "getPayable", payableId));
+
+        return this.repository.findById(payableId);
     }
 
     @Override
     public Flux<Payable> getAllPayables() {
-        return null;
+        this.logger.info("getAllPayables()");
+        return this.repository.findAll();
     }
 
     @Override
     public Mono<List<Payable>> getAllPayablesBetween(LocalDate from, LocalDate until) {
+        this.logger.info(String.format("%1$s(%2$s, %2$s)", "getAllPayablesBetween", from.toString(), until.toString()));
+
         Timestamp fromTS = Timestamp.ofTimeSecondsAndNanos(from.toEpochSecond(LocalTime.MIN, ZoneOffset.UTC), 0);
         Timestamp untilTS = Timestamp.ofTimeSecondsAndNanos(until.toEpochSecond(LocalTime.MIN, ZoneOffset.UTC), 0);
 
@@ -57,7 +62,9 @@ public class PayableControllerImpl implements PayableService {
 
     @Override
     public Mono<Payable> createPayable(Payable body) {
-        return null;
+        this.logger.info(String.format("%1$s(%2$s)", "createPayable", body.getPayableId()));
+
+        return this.repository.save(body);
     }
 
     @Override
