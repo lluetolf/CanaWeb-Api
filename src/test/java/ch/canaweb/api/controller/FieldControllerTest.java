@@ -1,14 +1,10 @@
-package ch.canaweb.api;
+package ch.canaweb.api.controller;
 
 import ch.canaweb.api.core.Field.Field;
-import ch.canaweb.api.error.AbstracHttpException;
 import ch.canaweb.api.persistence.FieldRepository;
 import com.google.cloud.Timestamp;
 import net.datafaker.Faker;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +22,7 @@ import static org.springframework.test.util.AssertionErrors.assertTrue;
 @SpringBootTest
 @AutoConfigureWebTestClient()
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class FieldControllerTest {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -55,6 +52,15 @@ public class FieldControllerTest {
         );
     }
 
+    @BeforeAll
+    void setUp() {
+        this.logger.info("Setup");
+        this.repository.deleteAll().block();
+        this.repository.save(generateRandomField()).block();
+        this.repository.save(generateRandomField()).block();
+        this.repository.save(generateRandomField()).block();
+    }
+
     @Test
     void hello() {
         this.webClient.get()
@@ -81,16 +87,15 @@ public class FieldControllerTest {
     @Test
     @Order(2)
     void createField() {
-        Field f = generateRandomField();
-        Mono<Field> new_field = Mono.just(f);
-        FieldControllerTest.createdField = f;
+        Field new_field = generateRandomField();
+        FieldControllerTest.createdField = new_field;
 
         Field field = this.webClient
                 .post()
                 .uri("/api/field")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .body(new_field, Field.class)
+                .body(Mono.just(new_field), Field.class)
                 .exchange()
                 .expectStatus().isCreated()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -98,7 +103,7 @@ public class FieldControllerTest {
                 .returnResult().getResponseBody();
 
 
-        this.logger.info(f.toString());
+        this.logger.info(new_field.toString());
     }
 
     @Test
