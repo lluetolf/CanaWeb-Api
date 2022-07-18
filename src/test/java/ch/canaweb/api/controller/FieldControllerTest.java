@@ -88,6 +88,7 @@ public class FieldControllerTest {
     @Order(2)
     void createField() {
         Field new_field = generateRandomField();
+        new_field.setName(new_field.getName() + "_AUTO_GEN");
         FieldControllerTest.createdField = new_field;
 
         Field field = this.webClient

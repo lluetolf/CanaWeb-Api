@@ -20,7 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collectionName = "Payable")
-public class Payable implements Serializable {
+public class Payable implements Serializable, Cloneable {
     @DocumentId
     private String payableId;
 
@@ -45,5 +45,9 @@ public class Payable implements Serializable {
     @JsonSerialize(using = FireStoreSerializer.class)
     @JsonDeserialize(using = FireStoreDeserializer.class)
     private Timestamp lastUpdated;
+
+    public Payable clone() throws CloneNotSupportedException {
+        return (Payable) super.clone();
+    }
 }
 

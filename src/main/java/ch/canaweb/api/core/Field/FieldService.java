@@ -45,7 +45,9 @@ public interface FieldService {
             consumes = "application/json",
             produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    Mono<Field> updateField(@RequestBody Field body);
+    Mono<Field> updateField(
+            @RequestBody Field body,
+            @RequestParam(required = false) String fieldId);
 
     @DeleteMapping(
             path = "/name/{fieldName}")

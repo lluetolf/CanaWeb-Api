@@ -23,7 +23,7 @@ public interface PayableService {
             value    = "",
             produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    Mono<Payable> getPayable(@RequestParam(required = true) String payableId);
+    Mono<Payable> getPayable(@RequestParam() String payableId);
 
     @GetMapping(
             value    = "/all",
@@ -36,8 +36,8 @@ public interface PayableService {
             produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     Mono<List<Payable>>  getAllPayablesBetween(
-            @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-            @RequestParam("until") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate until
+            @RequestParam(name = "from", required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(name = "until", required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate until
     );
 
     @PostMapping(
@@ -52,10 +52,13 @@ public interface PayableService {
             consumes = "application/json",
             produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    Mono<Payable> updatePayable(@RequestBody Payable body);
+    Mono<Payable> updatePayable(
+            @RequestBody Payable body,
+            @RequestParam(required = false) String payableId
+    );
 
     @DeleteMapping(
-            path = "/payable/{payableId}")
+            path = "/{payableId}")
     @ResponseStatus(HttpStatus.OK)
-    Mono<Void> deletePayable(@PathVariable int payableId);
+    Mono<Void> deletePayable(@PathVariable String payableId);
 }

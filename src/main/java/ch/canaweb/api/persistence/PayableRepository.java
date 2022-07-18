@@ -17,5 +17,7 @@ public interface PayableRepository extends FirestoreReactiveRepository<Payable> 
 
     Mono<Void> delete(Payable payable);
 
+    Mono<Void> deleteById(String payableId);
+
     Flux<Payable> findByTransactionDateGreaterThanEqualAndTransactionDateLessThanEqual(Timestamp from, Timestamp until);
 }

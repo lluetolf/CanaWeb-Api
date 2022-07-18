@@ -64,7 +64,7 @@ public class FieldControllerImpl implements FieldService {
 
     @Override
     public Mono<Field> createField(Field field) {
-        this.logger.info("createField: " + field.getFieldId());
+        this.logger.info(String.format("%1$s(%2$s)", "createField", field.getName()));
 
         try {
             return this.repository.findFieldByName(field.getName())
@@ -76,13 +76,12 @@ public class FieldControllerImpl implements FieldService {
                         } else {
                             this.logger.info("Create Field.");
                             field.setLastUpdated(Timestamp.now());
-                            return this.repository.save(field).log();
+                            return this.repository.save(field);
                         }
-                    }).onErrorResume(Exception.class, e -> {
-                        return Mono.error(e);
-                    });
+                    })
+                    .onErrorMap( IllegalArgumentException.class, e -> new BaseHttpException("Failed to create new Field", e.getMessage()) );
         } catch (Exception e) {
-            this.logger.error("ERROR 2CAUGHT: "  + e.getMessage());
+            this.logger.error("ERROR CAUGHT: "  + e.getMessage());
             e.printStackTrace();
         }
 
@@ -90,8 +89,14 @@ public class FieldControllerImpl implements FieldService {
     }
 
     @Override
-    public Mono<Field> updateField(Field field) {
-        this.logger.info("updateField: " + field.getFieldId());
+    public Mono<Field> updateField(Field field, String fieldId) {
+        this.logger.info(String.format("%1$s(%2$s, %3$s)", "updateField", field.getId(), fieldId));
+
+        if(fieldId != null) {
+
+            if(!fieldId.equals(field.getId()))
+                return Mono.error(new BaseHttpException("RequestParam Id does not match payload.", fieldId));
+        }
 
         return this.repository.findById(field.getId())
                 .hasElement()

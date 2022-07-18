@@ -32,6 +32,8 @@ class PayableControllerImplTest {
     private Faker faker = new Faker();
 
     private List<Payable> allPayables;
+    private Payable createdPayable;
+
 
     @Autowired
     private WebTestClient webClient;
@@ -72,8 +74,7 @@ class PayableControllerImplTest {
     void setUp() {
         this.logger.info("Setup");
         this.repository.deleteAll().block();
-        this.allPayables = createBaseSet();
-        this.repository.saveAll(this.allPayables).blockLast();
+        this.repository.saveAll(createBaseSet()).blockLast();
     }
 
     @AfterAll
@@ -144,8 +145,10 @@ class PayableControllerImplTest {
     }
 
     @Test
+    @Order(1)
     void createPayable() {
         Payable newPayable = generatePayable();
+        this.createdPayable = newPayable;
         this.logger.info("Create Payable: " + newPayable.getPayableId());
 
         Payable returned = this.webClient.post()
@@ -157,5 +160,71 @@ class PayableControllerImplTest {
                 .expectStatus().isCreated()
                 .expectBody(Payable.class)
                 .returnResult().getResponseBody();
+    }
+
+    @Test
+    @Order(2)
+    void getPayablebyId() {
+        String payableId = this.createdPayable.getPayableId();
+
+        Payable returned = this.webClient.get()
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .path("/api/payable")
+                                .queryParam("payableId", payableId)
+                                .build())
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectBody(Payable.class)
+                .returnResult().getResponseBody();
+
+        assertTrue(payableId.equals(returned.getPayableId()), "Unable to fetch Payable by id.");
+    }
+
+    @Test
+    @Order(2)
+    void updatePayable() {
+        Payable updatedPayable = null;
+        try {
+            updatedPayable = this.createdPayable.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+
+        String newComment = "Got Updated";
+        updatedPayable.setComment(newComment);
+
+        Payable p = this.webClient.put()
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .path("/api/payable")
+                                .queryParam("payableId", this.createdPayable.getPayableId())
+                                .build())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(updatedPayable), Payable.class)
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectBody(Payable.class)
+                .returnResult().getResponseBody();
+
+        assertTrue(newComment.equals(p.getComment()), "Commment updated.");
+    }
+
+    @Test
+    @Order(3)
+    void deletePayable() {
+        String payableId = this.createdPayable.getPayableId();
+
+        assertTrue(this.repository.findById(payableId).block() != null, "Payable to delete does not exist.");
+
+        this.webClient.delete()
+                .uri("/api/payable/" + payableId)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().is2xxSuccessful();
+
+        assertTrue(this.repository.findById(payableId).block() == null, "Payable was not deleted.");
     }
 }
