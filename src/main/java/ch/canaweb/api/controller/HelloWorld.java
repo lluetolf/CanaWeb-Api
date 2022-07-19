@@ -15,7 +15,7 @@ public class HelloWorld {
 
     @GetMapping("/hello")
     public Mono<String> hello() {
-        return Mono.just("Hello World 3.");
+        return Mono.just("Hello World 4.");
     }
 
     @GetMapping(path = "/user")

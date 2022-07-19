@@ -29,7 +29,7 @@ public class FieldControllerImpl implements FieldService {
 
     @Override
     public Mono<String> getVersion() {
-        return Mono.just("V1.0");
+        return Mono.just("V1.1");
     }
 
     @Override
