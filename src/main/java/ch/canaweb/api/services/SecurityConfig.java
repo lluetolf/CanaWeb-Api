@@ -20,7 +20,7 @@ import java.util.Arrays;
 @Configuration
 public class SecurityConfig {
 
-    @Profile({"prod", "uat", "local"})
+    @Profile({"prod", "uat", "dev"})
     @Order(Ordered.HIGHEST_PRECEDENCE)
     @Bean
     SecurityWebFilterChain apiHttpSecurity(ServerHttpSecurity http) {

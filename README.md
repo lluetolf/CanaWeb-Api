@@ -1,10 +1,10 @@
 # Set Project ID
 1. gcloud projects list
-2. 
+## DEV: dev-canaweb-firestore
+## PROD: prod-canaweb-firestore
 
 # Deploy
-gcloud app deploy --project=dev-canaweb-firestore 
+project_id=dev-canaweb-firestore
+gcloud app deploy --project=${project_id}
+gcloud app deploy dispatch.yaml --project=${project_id}
 
-# token
-curl --location --request POST 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDxNB0QvG8UKQDnc1s7ik7oqsg-0CdW758' --header 'content-type: application/json' --data-raw '{"email": "lukas.luetolf@gmail.com", "password": "abc123", "returnSecureToken": true }' |grep idToken >
-token.txt
