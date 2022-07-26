@@ -2,7 +2,7 @@ package ch.canaweb.api.persistence;
 
 import ch.canaweb.api.core.Payable.Payable;
 import com.google.cloud.Timestamp;
-import org.springframework.cloud.gcp.data.firestore.FirestoreReactiveRepository;
+import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

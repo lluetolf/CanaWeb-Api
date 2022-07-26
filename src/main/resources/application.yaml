@@ -9,12 +9,6 @@ spring:
         jwt:
           jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com
 
-  cloud:
-    gcp:
-      firestore:
-        enabled: true
-        project-id: dev-canaweb-firestore
-
   level:
     org:
       springframework:
@@ -22,15 +16,28 @@ spring:
           cors:
             reactive:
               DefaultCorsProcessor: DEBUG
+
+server:
+  port: 9547
+
 ---
 spring:
   config:
     activate:
       on-profile: local
+  cloud:
+    gcp:
+      security:
+        firebase:
+          enabled: false
+      firestore:
+        emulator:
+          enabled: true
+        host-port: localhost:8080
+
 app:
   name: CanaWeb-API
   description: ${app.name} is running in LOCAL.
-
 
 ---
 spring:
@@ -42,11 +49,15 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com
+  cloud:
+    gcp:
+      firestore:
+        enabled: true
+        project-id: dev-canaweb-firestore
 
 app:
   name: CanaWeb-API
   description: ${app.name} is running in UAT.
-
 
 
 ---
@@ -72,6 +83,5 @@ app:
 
 server:
   port: 8555
-
 
 
