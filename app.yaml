@@ -4,4 +4,4 @@ env: standard
 service: 'canaweb-api'
 
 env_variables:
-  spring_profiles_active: "dev"
+  spring_profiles_active: _SB_ENV

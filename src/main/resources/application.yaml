@@ -1,6 +1,8 @@
 app:
   name: CanaWeb-API
   description: ${app.name} is running in DEFAULT.
+  build-time: _BUILD_TIME
+  commit: _COMMIT_ID
 
 spring:
   security:
