@@ -2,7 +2,8 @@ app:
   name: CanaWeb-API
   description: ${app.name} is running in DEFAULT.
   build-time: _BUILD_TIME
-  commit: _COMMIT_ID
+  commit-sha: _COMMIT_ID
+  branch-name: _BRANCH_NAME
 
 spring:
   security:
@@ -10,7 +11,6 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com
-
   level:
     org:
       springframework:
@@ -59,6 +59,9 @@ spring:
 app:
   description: ${app.name} is running in UAT.
 
+server:
+  port: 8080
+
 
 ---
 spring:
@@ -81,6 +84,6 @@ app:
   description: ${app.name} is running in PROD.
 
 server:
-  port: 8555
+  port: 8080
 
 

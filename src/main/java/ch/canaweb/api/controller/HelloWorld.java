@@ -3,6 +3,8 @@ package ch.canaweb.api.controller;
 import ch.canaweb.api.error.BaseHttpException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -16,10 +18,17 @@ import java.util.Map;
 public class HelloWorld {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Autowired
+    private Environment env;
+
     @GetMapping("/hello")
     public Mono<Map> hello() {
         return Mono.just(
-                Map.of("version", "V1.0", "time", LocalDateTime.of(2022, 07, 27, 10, 20).toString())
+                Map.of(
+                        "version", "V1.0",
+                        "time", env.getProperty("app.build-time"),
+                        "commit", env.getProperty("app.commit-sha"),
+                        "branch", env.getProperty("app.branch-name"))
         );
     }
 
