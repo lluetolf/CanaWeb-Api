@@ -8,6 +8,5 @@ steps:
         echo 'ENV: '${_SB_ENV}
         sed -i "s|_SB_ENV|${_SB_ENV}|g" app.yaml
         cat app.yaml # you can now see the secret value inserted as the env variable
-        gcloud config set app/cloud_build_timeout 1600
-        gcloud app deploy
+        gcloud config set app/cloud_build_timeout 1600 && gcloud app deploy
 timeout: '1600s'
