@@ -15,6 +15,7 @@ import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 @EnableWebFluxSecurity
 @Configuration
@@ -33,7 +34,7 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
                 .cors().configurationSource(corsConfiguration())
-                .and().csrf(csrf -> csrf.disable())
+                .and().csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .build();
     }
 
@@ -46,7 +47,7 @@ public class SecurityConfig {
         corsConfig.addAllowedOrigin("https://canaweb-ui-dot-dev-canaweb-firestore.uc.r.appspot.com");
         corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         corsConfig.setMaxAge(3600L);
-        corsConfig.setAllowedHeaders(Arrays.asList("*"));
+        corsConfig.setAllowedHeaders(List.of("*"));
 
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();

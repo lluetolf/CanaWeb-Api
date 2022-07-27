@@ -6,8 +6,6 @@ import com.google.cloud.spring.data.firestore.FirestoreReactiveRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Date;
-
 public interface PayableRepository extends FirestoreReactiveRepository<Payable> {
     Mono<Payable> findById(String id);
 

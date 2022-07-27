@@ -5,7 +5,6 @@ import ch.canaweb.api.core.Payable.PayableService;
 import ch.canaweb.api.error.BaseHttpException;
 import ch.canaweb.api.error.DuplicateHttpException;
 import ch.canaweb.api.error.EntityDoesNotExistHttpException;
-import ch.canaweb.api.persistence.FieldRepository;
 import ch.canaweb.api.persistence.PayableRepository;
 import com.google.cloud.Timestamp;
 import org.slf4j.Logger;
@@ -58,9 +57,7 @@ public class PayableControllerImpl implements PayableService {
 
         return repository.findByTransactionDateGreaterThanEqualAndTransactionDateLessThanEqual(fromTS, untilTS)
                 .collectList()
-                .doOnNext(x -> {
-                    this.logger.info("Payables: " + x.size());
-                });
+                .doOnNext(x -> this.logger.info("Payables: " + x.size()));
     }
 
     @Override
@@ -127,9 +124,7 @@ public class PayableControllerImpl implements PayableService {
                     this.logger.info(String.valueOf(payable));
                 })
                 .flatMap(
-                        x -> {
-                            return this.repository.delete(x);
-                        }
+                        x -> this.repository.delete(x)
                 )
                 .onErrorMap(
                         x -> {

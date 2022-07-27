@@ -12,14 +12,11 @@ public class FireStoreService {
 
     public static Firestore getFirestore() {
         if (firestore == null) {
-            Firestore db =
+            firestore =
                     FirestoreOptions.newBuilder().setProjectId(FireStoreService.projectId)
                             .build().getService();
-            firestore = db;
         }
 
         return firestore;
     }
-
-
 }

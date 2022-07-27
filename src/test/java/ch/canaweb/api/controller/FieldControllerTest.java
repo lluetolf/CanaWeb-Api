@@ -26,7 +26,7 @@ import static org.springframework.test.util.AssertionErrors.assertTrue;
 public class FieldControllerTest {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private Faker faker = new Faker();
+    private final Faker faker = new Faker();
 
     private static int fieldCnt = 0;
     private static Field createdField = null;

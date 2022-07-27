@@ -122,9 +122,7 @@ public class FieldControllerImpl implements FieldService {
                     this.logger.info(String.valueOf(x));
                 })
                 .flatMap(
-                        x -> {
-                            return this.repository.delete(x);
-                        }
+                        x -> this.repository.delete(x)
                 )
                 .onErrorMap(
                 x -> {

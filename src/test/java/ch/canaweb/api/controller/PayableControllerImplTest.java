@@ -29,7 +29,7 @@ class PayableControllerImplTest {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private Faker faker = new Faker();
+    private final Faker faker = new Faker();
 
     private List<Payable> allPayables;
     private Payable createdPayable;
