@@ -36,7 +36,6 @@ spring:
         host-port: localhost:8080
 
 app:
-  name: CanaWeb-API
   description: ${app.name} is running in LOCAL.
 
 ---
@@ -56,7 +55,6 @@ spring:
         project-id: dev-canaweb-firestore
 
 app:
-  name: CanaWeb-API
   description: ${app.name} is running in UAT.
 
 
@@ -78,7 +76,6 @@ spring:
         project-id: prod-canaweb-firestore
 
 app:
-  name: CanaWeb-API
   description: ${app.name} is running in PROD.
 
 server:

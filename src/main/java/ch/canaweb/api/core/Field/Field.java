@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 
@@ -24,20 +25,27 @@ public class Field implements Serializable {
     @DocumentId
     private String id;
 
+    @NotNull(message = "FieldId cannot be null.")
     private String fieldId;
 
+    @NotNull(message = "Name cannot be null.")
     private String name;
 
+    @NotNull(message = "Owner cannot be null.")
     private String owner;
 
+    @NotNull(message = "Size cannot be null.")
     private double size;
 
+    @NotNull(message = "CultivatedArea cannot be null.")
     private double cultivatedArea;
 
     @JsonSerialize(using = FireStoreSerializer.class)
     @JsonDeserialize(using = FireStoreDeserializer.class)
+    @NotNull(message = "AcquisitionDate cannot be null.")
     private Timestamp acquisitionDate;
 
+    @NotNull(message = "IngenioId cannot be null.")
     private String ingenioId;
 
     @JsonSerialize(using = FireStoreSerializer.class)

@@ -2,6 +2,7 @@ package ch.canaweb.api.core.Payable;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -45,7 +46,9 @@ public interface PayableService {
             consumes = "application/json",
             produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    Mono<Payable> createPayable(@RequestBody Payable body);
+    Mono<Payable> createPayable(
+            @Validated
+            @RequestBody Payable body);
 
     @PutMapping(
             path = "",
@@ -53,6 +56,7 @@ public interface PayableService {
             produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     Mono<Payable> updatePayable(
+            @Validated
             @RequestBody Payable body,
             @RequestParam(required = false) String payableId
     );

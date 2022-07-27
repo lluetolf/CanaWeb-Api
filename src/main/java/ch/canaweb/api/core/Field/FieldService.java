@@ -2,6 +2,7 @@ package ch.canaweb.api.core.Field;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -38,7 +39,9 @@ public interface FieldService {
             consumes = "application/json",
             produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    Mono<Field> createField(@RequestBody Field body);
+    Mono<Field> createField(
+            @Validated
+            @RequestBody Field body);
 
     @PutMapping(
             path = "",
@@ -46,6 +49,7 @@ public interface FieldService {
             produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     Mono<Field> updateField(
+            @Validated
             @RequestBody Field body,
             @RequestParam(required = false) String fieldId);
 

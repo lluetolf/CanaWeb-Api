@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -26,16 +27,20 @@ public class Payable implements Serializable, Cloneable {
 
     @JsonSerialize(using = FireStoreSerializer.class)
     @JsonDeserialize(using = FireStoreDeserializer.class)
+    @NotNull(message = "TransactionDate cannot be null.")
     private Timestamp transactionDate;
 
+    @NotNull(message = "PPU cannot be null.")
     private double pricePerUnit;
 
+    @NotNull(message = "Quantity cannot be null.")
     private double quantity;
 
     private int documentId;
 
     private List<String> fieldId;
 
+    @NotNull(message = "Category cannot be null.")
     private String category;
 
     private String subCategory;
