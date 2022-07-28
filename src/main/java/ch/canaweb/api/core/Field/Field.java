@@ -25,9 +25,6 @@ public class Field implements Serializable {
     @DocumentId
     private String id;
 
-    @NotNull(message = "FieldId cannot be null.")
-    private String fieldId;
-
     @NotNull(message = "Name cannot be null.")
     private String name;
 

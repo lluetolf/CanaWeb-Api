@@ -21,7 +21,7 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    @Profile({"prod", "uat", "dev"})
+    @Profile({"!local"})
     @Order(Ordered.HIGHEST_PRECEDENCE)
     @Bean
     SecurityWebFilterChain apiHttpSecurity(ServerHttpSecurity http) {

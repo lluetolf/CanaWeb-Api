@@ -15,16 +15,16 @@ public interface ReceivableService {
     Mono<Receivable> getReceivable(@PathVariable int receivableId);
 
     @GetMapping(
-            value    = "/receivable/field/{fieldId}",
+            value    = "/receivable/field/{fieldName}",
             produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    Flux<Receivable> getReceivableForField(@PathVariable int fieldId);
+    Flux<Receivable> getReceivableForField(@PathVariable String fieldName);
 
     @DeleteMapping(
-            value    = "/receivable/field/{fieldId}",
+            value    = "/receivable/field/{fieldName}",
             produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    Mono<Void> deleteReceivableForField(@PathVariable int fieldId);
+    Mono<Void> deleteReceivableForField(@PathVariable String fieldName);
 
     @GetMapping(
             value    = "/receivable",

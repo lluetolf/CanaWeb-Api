@@ -33,12 +33,6 @@ public class FieldControllerImpl implements FieldService {
     }
 
     @Override
-    public Mono<Field> getField(String fieldId) {
-        this.logger.info("FieldId: " + fieldId);
-        return this.repository.findByFieldId(fieldId).log();
-    }
-
-    @Override
     public Mono<Field> getFieldByName(String name) {
         this.logger.info("getFieldByName: " + name);
         return this.repository.findFieldByName(name).log()
@@ -89,16 +83,16 @@ public class FieldControllerImpl implements FieldService {
     }
 
     @Override
-    public Mono<Field> updateField(Field field, String fieldId) {
-        this.logger.info(String.format("%1$s(%2$s, %3$s)", "updateField", field.getId(), fieldId));
+    public Mono<Field> updateField(Field field, String fieldName) {
+        this.logger.info(String.format("%1$s(%2$s, %3$s)", "updateField", field.getName(), fieldName));
 
-        if(fieldId != null) {
-
-            if(!fieldId.equals(field.getId()))
-                return Mono.error(new BaseHttpException("RequestParam Id does not match payload.", fieldId));
+        if(fieldName != null) {
+            if(!fieldName.equals(field.getName()))
+                return Mono.error(new BaseHttpException("RequestParam name does not match payload.", fieldName));
         }
 
-        return this.repository.findById(field.getId())
+        return this.repository.findFieldByName(field.getName())
+                .doOnNext( x -> field.setId(x.getId()))
                 .hasElement()
                 .flatMap(x -> {
                     if(x) {

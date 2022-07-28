@@ -38,7 +38,7 @@ public class Payable implements Serializable, Cloneable {
 
     private int documentId;
 
-    private List<String> fieldId;
+    private List<String> fieldNames;
 
     @NotNull(message = "Category cannot be null.")
     private String category;

@@ -42,7 +42,6 @@ public class FieldControllerTest {
         return new Field(
                 null,
                 this.faker.random().hex(),
-                this.faker.residentEvil().equipment(),
                 this.faker.residentEvil().character(),
                 this.faker.random().nextDouble(0, 100),
                 this.faker.random().nextDouble(0, 100),
@@ -154,7 +153,7 @@ public class FieldControllerTest {
                 .expectBody(Field.class)
                 .returnResult().getResponseBody();
 
-        field.setName("New_Name");
+        field.setCultivatedArea(999.99);
         field.setIngenioId("NEW_INGENIO_ID");
 
         Field updatedField = this.webClient.put()
@@ -167,7 +166,7 @@ public class FieldControllerTest {
                 .expectBody(Field.class)
                 .returnResult().getResponseBody();
 
-        assertTrue("Name updated", "New_Name".equals(updatedField.getName()));
+        assertTrue("Name updated", 999.99 == updatedField.getCultivatedArea());
         assertTrue("IngenioId updated", "NEW_INGENIO_ID".equals(updatedField.getIngenioId()));
     }
 
@@ -177,7 +176,7 @@ public class FieldControllerTest {
         Field f = FieldControllerTest.createdField;
         f.setId(null);
 
-        String url = "/api/field/name/" + "New_Name";
+        String url = "/api/field/name/" + FieldControllerTest.createdField.getName();
         this.webClient.delete()
                 .uri(url)
                 .accept(MediaType.APPLICATION_JSON)
@@ -200,8 +199,5 @@ public class FieldControllerTest {
 
         assertTrue("Field got deleted successfully.", fields.size() == FieldControllerTest.fieldCnt);
     }
-
-
-
 
 }

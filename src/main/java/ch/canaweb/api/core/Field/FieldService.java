@@ -16,22 +16,16 @@ public interface FieldService {
     Mono<String> getVersion();
 
     @GetMapping(
-            path = "",
+            path = "/all",
             produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    Mono<Field> getField(@RequestParam(required = false) String fieldId);
+    Flux<Field> getAllFields();
 
     @GetMapping(
             path = "/name/{name}",
             produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     Mono<Field> getFieldByName(@PathVariable String name);
-
-    @GetMapping(
-            path = "/all",
-            produces = "application/json")
-    @ResponseStatus(HttpStatus.OK)
-    Flux<Field> getAllFields();
 
     @PostMapping(
             path = "",
@@ -49,8 +43,8 @@ public interface FieldService {
     @ResponseStatus(HttpStatus.OK)
     Mono<Field> updateField(
             @Validated
-            @RequestBody Field body,
-            @RequestParam(required = false) String fieldId);
+            @RequestBody Field field,
+            @RequestParam( name = "fieldName", required = false) String fieldName);
 
     @DeleteMapping(
             path = "/name/{fieldName}")

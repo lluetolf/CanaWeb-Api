@@ -7,18 +7,18 @@ public class Receivable {
     private String zafra;
     private LocalDate transactionDate;
     private String documentId;
-    private int fieldId;
+    private String fieldName;
     private LocalDate lastUpdated;
 
     public Receivable() {
     }
 
-    public Receivable(int receivableId, String zafra, LocalDate transactionDate, String documentId, int fieldId, LocalDate lastUpdated) {
+    public Receivable(int receivableId, String zafra, LocalDate transactionDate, String documentId, String fieldName, LocalDate lastUpdated) {
         this.receivableId = receivableId;
         this.zafra = zafra;
         this.transactionDate = transactionDate;
         this.documentId = documentId;
-        this.fieldId = fieldId;
+        this.fieldName = fieldName;
         this.lastUpdated = lastUpdated;
     }
 
@@ -38,12 +38,12 @@ public class Receivable {
         this.documentId = documentId;
     }
 
-    public int getFieldId() {
-        return fieldId;
+    public String getFieldName() {
+        return fieldName;
     }
 
-    public void setFieldId(int fieldId) {
-        this.fieldId = fieldId;
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
     }
 
     public int getReceivableId() {
