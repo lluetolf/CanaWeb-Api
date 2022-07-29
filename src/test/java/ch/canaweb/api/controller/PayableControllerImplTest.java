@@ -15,6 +15,9 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.YearMonth;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +48,7 @@ class PayableControllerImplTest {
     private List<Payable> createBaseSet() {
         ArrayList<Payable> payables = new ArrayList<>();
 
-        for (int i = 0; i < faker.random().nextInt(3, 12); i++)
+        for (int i = 0; i < faker.random().nextInt(36, 72); i++)
             payables.add(generatePayable());
 
         return payables;
@@ -53,7 +56,7 @@ class PayableControllerImplTest {
 
     private Payable generatePayable() {
         int secondsPerYear = 365*24*60*60;
-        long today = 1657639148 - secondsPerYear;
+        long today = LocalDate.now().toEpochSecond(LocalTime.MIN, ZoneOffset.UTC) - secondsPerYear;
         return new Payable(
                 this.faker.random().hex(),
                 Timestamp.ofTimeSecondsAndNanos(today + faker.random().nextInt(0, secondsPerYear), 0),
@@ -116,7 +119,6 @@ class PayableControllerImplTest {
 
     @Test
     void getAllPayablesBetween() {
-
         int offset = faker.random().nextInt(90, 365);
 
         LocalDate fromDate = LocalDate.now().minusDays(offset);
@@ -140,6 +142,33 @@ class PayableControllerImplTest {
                 .returnResult()
                 .getResponseBody();
 
+        var repoList = this.repository.findByTransactionDateGreaterThanEqualAndTransactionDateLessThanEqual(fromTS, untilTS).collectList().block();
+        assertTrue(repoList.size() == payables.size(), "Count of payables between Dates matche.");
+    }
+
+    @Test
+    void getAllPayablesForMonth() {
+        int year = 2022;
+        int month = 4;
+
+        this.logger.info("Year: " + year + ", month:" + month);
+        List<Payable> payables = this.webClient.get()
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .path("/api/payable/month")
+                                .queryParam("year", year)
+                                .queryParam("month", month)
+                                .build())
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectBodyList(Payable.class)
+                .returnResult()
+                .getResponseBody();
+
+        YearMonth m = YearMonth.of(year, month);
+        Timestamp fromTS = Timestamp.ofTimeSecondsAndNanos(m.atDay(1).toEpochSecond(LocalTime.MIN, ZoneOffset.UTC), 0);
+        Timestamp untilTS = Timestamp.ofTimeSecondsAndNanos(m.atEndOfMonth().toEpochSecond(LocalTime.MAX, ZoneOffset.UTC), 0);
+        this.logger.info("Get: " + fromTS.toDate().toString() + " until " + untilTS.toDate().toString() );
         var repoList = this.repository.findByTransactionDateGreaterThanEqualAndTransactionDateLessThanEqual(fromTS, untilTS).collectList().block();
         assertTrue(repoList.size() == payables.size(), "Count of payables between Dates matche.");
     }

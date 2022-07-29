@@ -40,6 +40,15 @@ public interface PayableService {
             @RequestParam(name = "until", required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate until
     );
 
+    @GetMapping(
+            value    = "/month",
+            produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    Mono<List<Payable>>  getAllPayablesForMonth(
+            @RequestParam(name = "year", required = true) int year,
+            @RequestParam(name = "month", required = true) int month
+    );
+
     @PostMapping(
             path = "",
             consumes = "application/json",

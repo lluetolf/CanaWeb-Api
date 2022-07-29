@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.util.List;
 
@@ -50,10 +51,24 @@ public class PayableControllerImpl implements PayableService {
 
     @Override
     public Mono<List<Payable>> getAllPayablesBetween(LocalDate from, LocalDate until) {
-        this.logger.info(String.format("%1$s(%2$s, %2$s)", "getAllPayablesBetween", from.toString(), until.toString()));
+        this.logger.info(String.format("%1$s(%2$s, %3$s)", "getAllPayablesBetween", from.toString(), until.toString()));
 
         Timestamp fromTS = Timestamp.ofTimeSecondsAndNanos(from.toEpochSecond(LocalTime.MIN, ZoneOffset.UTC), 0);
         Timestamp untilTS = Timestamp.ofTimeSecondsAndNanos(until.toEpochSecond(LocalTime.MIN, ZoneOffset.UTC), 0);
+
+        return repository.findByTransactionDateGreaterThanEqualAndTransactionDateLessThanEqual(fromTS, untilTS)
+                .collectList()
+                .doOnNext(x -> this.logger.info("Payables: " + x.size()));
+    }
+
+    @Override
+    public Mono<List<Payable>> getAllPayablesForMonth(int year, int month) {
+        this.logger.info(String.format("%1$s(%2$s, %3$s)", "getAllPayablesBetween", year, month));
+
+
+        YearMonth m = YearMonth.of(year, month);
+        Timestamp fromTS = Timestamp.ofTimeSecondsAndNanos(m.atDay(1).toEpochSecond(LocalTime.MIN, ZoneOffset.UTC), 0);
+        Timestamp untilTS = Timestamp.ofTimeSecondsAndNanos(m.atEndOfMonth().toEpochSecond(LocalTime.MAX, ZoneOffset.UTC), 0);
 
         return repository.findByTransactionDateGreaterThanEqualAndTransactionDateLessThanEqual(fromTS, untilTS)
                 .collectList()
