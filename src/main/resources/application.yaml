@@ -33,6 +33,7 @@ spring:
         firebase:
           enabled: false
       firestore:
+        project-id: dev-canaweb-firestore
         emulator:
           enabled: true
         host-port: localhost:8080

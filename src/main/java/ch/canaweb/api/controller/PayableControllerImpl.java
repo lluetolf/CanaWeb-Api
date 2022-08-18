@@ -78,9 +78,10 @@ public class PayableControllerImpl implements PayableService {
     @Override
     public Mono<Payable> createPayable(Payable payable) {
         this.logger.info(String.format("%1$s(%2$s)", "createPayable", payable.getPayableId()));
+        payable.setPayableId(null);
 
         try {
-            return this.repository.findById(payable.getPayableId())
+            return this.repository.findByPayableId(payable.getPayableId())
                     .hasElement()
                     .flatMap(x -> {
                         if (x) {

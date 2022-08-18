@@ -7,7 +7,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface PayableRepository extends FirestoreReactiveRepository<Payable> {
-    Mono<Payable> findById(String id);
+    Mono<Payable> findByPayableId(String id);
 
     Flux<Payable> findAll();
 
