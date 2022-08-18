@@ -60,9 +60,9 @@ class PayableControllerImplTest {
         return new Payable(
                 this.faker.random().hex(),
                 Timestamp.ofTimeSecondsAndNanos(today + faker.random().nextInt(0, secondsPerYear), 0),
-                faker.random().nextDouble(1657639148, 10000),
+                faker.random().nextDouble(50, 5000),
                 faker.random().nextInt(0, 100),
-                faker.random().nextInt(100, 10000),
+                "DID-" + faker.random().nextInt(100, 10000),
                 List.of(this.faker.random().hex(), this.faker.random().hex()),
                 faker.residentEvil().equipment(),
                 faker.residentEvil().biologicalAgent(),

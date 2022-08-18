@@ -36,7 +36,7 @@ public class Payable implements Serializable, Cloneable {
     @NotNull(message = "Quantity cannot be null.")
     private double quantity;
 
-    private int documentId;
+    private String documentId;
 
     private List<String> fieldNames;
 
