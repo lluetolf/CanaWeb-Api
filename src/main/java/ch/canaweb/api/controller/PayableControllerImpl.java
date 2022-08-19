@@ -78,7 +78,8 @@ public class PayableControllerImpl implements PayableService {
     @Override
     public Mono<Payable> createPayable(Payable payable) {
         this.logger.info(String.format("%1$s(%2$s)", "createPayable", payable.getPayableId()));
-        payable.setPayableId(null);
+        if("".equals(payable.getPayableId()))
+            payable.setPayableId(null);
 
         try {
             return this.repository.findByPayableId(payable.getPayableId())
@@ -93,7 +94,10 @@ public class PayableControllerImpl implements PayableService {
                             return this.repository.save(payable).log();
                         }
                     })
-                    .onErrorMap( e -> new BaseHttpException("Failed to create new Payable", e.getMessage()) );
+                    .onErrorMap( e -> {
+                        this.logger.info("Failed to create new Payable", e.getMessage());
+                        return new BaseHttpException("Failed to create new Payable", e.getMessage());
+                    });
         } catch (Exception e) {
             this.logger.error("ERROR CAUGHT: "  + e.getMessage());
             e.printStackTrace();
@@ -111,7 +115,7 @@ public class PayableControllerImpl implements PayableService {
                 return Mono.error(new BaseHttpException("RequestParam Id does not match payload.", payableId));
         }
 
-        return this.repository.findById(payableId)
+        return this.repository.findByPayableId(payableId)
                 .hasElement()
                 .flatMap(x -> {
                     if(x) {
@@ -122,7 +126,10 @@ public class PayableControllerImpl implements PayableService {
                         return Mono.error(new BaseHttpException("Can't update payable for none existing id.", "ID: " + payable.getPayableId()));
                     }
                 })
-                .onErrorResume(IllegalArgumentException.class, e -> {throw e;});
+                .onErrorMap( e -> {
+                    this.logger.info("Failed to update Payable", e.getMessage());
+                    return new BaseHttpException("Failed to update Payable: " + payableId, e.getMessage());
+                });
     }
 
 
