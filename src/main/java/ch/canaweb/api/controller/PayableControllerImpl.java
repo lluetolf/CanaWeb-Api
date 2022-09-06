@@ -1,5 +1,6 @@
 package ch.canaweb.api.controller;
 
+import ch.canaweb.api.core.Payable.MonthlyTotal;
 import ch.canaweb.api.core.Payable.Payable;
 import ch.canaweb.api.core.Payable.PayableService;
 import ch.canaweb.api.error.BaseHttpException;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -155,5 +157,18 @@ public class PayableControllerImpl implements PayableService {
                             return new EntityDoesNotExistHttpException("No Field with id exists: " + payableId, "");
                         }
                 );
+    }
+
+    @Override
+    public Flux<MonthlyTotal> getMonthlySummary() {
+        this.logger.info(String.format("%1$s()", "getMonthlySummary"));
+
+        return this.repository.findAll()
+                .map(x -> {
+                    Date tmp = x.getTransactionDate().toDate();
+                    return new MonthlyTotal(x.getPricePerUnit() * x.getQuantity(), tmp.getMonth(), tmp.getYear());
+                });
+         //TODO: groupby month and year
+        //TODO: don't use depricated methods
     }
 }

@@ -1,5 +1,6 @@
 package ch.canaweb.api.controller;
 
+import ch.canaweb.api.core.Payable.MonthlyTotal;
 import ch.canaweb.api.core.Payable.Payable;
 import ch.canaweb.api.persistence.PayableRepository;
 import com.google.cloud.Timestamp;
@@ -255,5 +256,18 @@ class PayableControllerImplTest {
                 .expectStatus().is2xxSuccessful();
 
         assertTrue(this.repository.findById(payableId).block() == null, "Payable was not deleted.");
+    }
+
+    @Test
+    @Order(3)
+    void getMontlyTotals() {
+
+        this.webClient.get()
+                .uri("/api/payable/monthlytotals")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectBodyList(MonthlyTotal.class);
+
     }
 }

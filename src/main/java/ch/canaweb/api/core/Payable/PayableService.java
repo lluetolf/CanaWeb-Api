@@ -73,4 +73,10 @@ public interface PayableService {
             path = "/{payableId}")
     @ResponseStatus(HttpStatus.OK)
     Mono<Void> deletePayable(@PathVariable String payableId);
+
+    @GetMapping(
+            value    = "/monthlytotals",
+            produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    Flux<MonthlyTotal> getMonthlySummary();
 }
