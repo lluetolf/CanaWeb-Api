@@ -1,72 +1,29 @@
 package ch.canaweb.api.core.Receivable;
 
-import java.time.LocalDate;
+import ch.canaweb.api.core.Payable.Payable;
+import com.google.cloud.firestore.annotation.DocumentId;
+import com.google.cloud.spring.data.firestore.Document;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public class Receivable {
-    private int receivableId;
-    private String zafra;
-    private LocalDate transactionDate;
-    private String documentId;
-    private String fieldName;
-    private LocalDate lastUpdated;
+import java.io.Serializable;
 
-    public Receivable() {
-    }
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collectionName = "Receivable")
+public class Receivable implements Serializable, Cloneable {
+    @DocumentId
+    private String receivableId;
 
-    public Receivable(int receivableId, String zafra, LocalDate transactionDate, String documentId, String fieldName, LocalDate lastUpdated) {
-        this.receivableId = receivableId;
-        this.zafra = zafra;
-        this.transactionDate = transactionDate;
-        this.documentId = documentId;
-        this.fieldName = fieldName;
-        this.lastUpdated = lastUpdated;
-    }
+    private Phase preliquidiation;
 
-    public LocalDate getTransactionDate() {
-        return transactionDate;
-    }
+    private Phase liquidiation;
 
-    public void setTransactionDate(LocalDate transactionDate) {
-        this.transactionDate = transactionDate;
-    }
-
-    public String getDocumentId() {
-        return documentId;
-    }
-
-    public void setDocumentId(String documentId) {
-        this.documentId = documentId;
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
-
-    public int getReceivableId() {
-        return receivableId;
-    }
-
-    public LocalDate getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setReceivableId(int receivableId) {
-        this.receivableId = receivableId;
-    }
-
-    public void setLastUpdated(LocalDate lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
-
-    public String getZafra() {
-        return zafra;
-    }
-
-    public void setZafra(String zafra) {
-        this.zafra = zafra;
-    }
+    private Phase ajuste;
 }
+
+
