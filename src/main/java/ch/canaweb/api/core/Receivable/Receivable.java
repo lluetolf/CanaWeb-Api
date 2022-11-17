@@ -19,9 +19,9 @@ public class Receivable implements Serializable, Cloneable {
     @DocumentId
     private String receivableId;
 
-    private Phase preliquidiation;
+    private Phase preliquidation;
 
-    private Phase liquidiation;
+    private Phase liquidation;
 
     private Phase ajuste;
 }
