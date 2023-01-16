@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
 
 
 @Data
@@ -42,8 +43,7 @@ public class Field implements Serializable {
     @NotNull(message = "AcquisitionDate cannot be null.")
     private Timestamp acquisitionDate;
 
-    @NotNull(message = "IngenioId cannot be null.")
-    private String ingenioId;
+    private List<String> ingenioId;
 
     @JsonSerialize(using = FireStoreSerializer.class)
     @JsonDeserialize(using = FireStoreDeserializer.class)

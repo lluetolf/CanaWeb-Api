@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.test.util.AssertionErrors.assertTrue;
@@ -46,7 +47,7 @@ public class FieldControllerTest {
                 this.faker.random().nextDouble(0, 100),
                 this.faker.random().nextDouble(0, 100),
                 Timestamp.now(),
-                this.faker.random().hex(),
+                Arrays.asList(this.faker.random().hex()),
                 Timestamp.now()
         );
     }
@@ -79,7 +80,7 @@ public class FieldControllerTest {
                 .expectBodyList(Field.class)
                 .returnResult().getResponseBody();
 
-        FieldControllerTest.fieldCnt = fields.size();
+        FieldControllerTest.fieldCnt = fields != null ? fields.size() : -1;
         this.logger.info("Found " + fields.size());
     }
 
@@ -90,7 +91,7 @@ public class FieldControllerTest {
         new_field.setName(new_field.getName() + "_AUTO_GEN");
         FieldControllerTest.createdField = new_field;
 
-        Field field = this.webClient
+        this.webClient
                 .post()
                 .uri("/api/field")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -138,7 +139,7 @@ public class FieldControllerTest {
                 .expectBodyList(Field.class)
                 .returnResult().getResponseBody();
 
-        assertTrue("Field got added successfully.", fields.size() == FieldControllerTest.fieldCnt + 1);
+        assertTrue("Field got added successfully.", (fields != null ? fields.size() : -1) == FieldControllerTest.fieldCnt + 1);
     }
 
     @Test
@@ -154,7 +155,7 @@ public class FieldControllerTest {
                 .returnResult().getResponseBody();
 
         field.setCultivatedArea(999.99);
-        field.setIngenioId("NEW_INGENIO_ID");
+        field.setIngenioId(Arrays.asList("NEW_INGENIO_ID", "NEW_INGENIO_ID2"));
 
         Field updatedField = this.webClient.put()
                 .uri("/api/field/")
@@ -166,8 +167,10 @@ public class FieldControllerTest {
                 .expectBody(Field.class)
                 .returnResult().getResponseBody();
 
-        assertTrue("Name updated", 999.99 == updatedField.getCultivatedArea());
-        assertTrue("IngenioId updated", "NEW_INGENIO_ID".equals(updatedField.getIngenioId()));
+        assert updatedField != null;
+        assertTrue("CultivatedArea updated", 999.99 == updatedField.getCultivatedArea());
+        assertTrue("IngenioId updated", "NEW_INGENIO_ID".equals(updatedField.getIngenioId().get(0)));
+        assertTrue("IngenioId2 updated", "NEW_INGENIO_ID2".equals(updatedField.getIngenioId().get(1)));
     }
 
     @Test
@@ -197,7 +200,7 @@ public class FieldControllerTest {
                 .expectBodyList(Field.class)
                 .returnResult().getResponseBody();
 
-        assertTrue("Field got deleted successfully.", fields.size() == FieldControllerTest.fieldCnt);
+        assertTrue("Field got deleted successfully.", (fields != null ? fields.size() : -1) == FieldControllerTest.fieldCnt);
     }
 
 }

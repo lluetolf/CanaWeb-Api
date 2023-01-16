@@ -1,6 +1,5 @@
 package ch.canaweb.api.core.Receivable;
 
-import ch.canaweb.api.core.Payable.Payable;
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.spring.data.firestore.Document;
 import lombok.AllArgsConstructor;

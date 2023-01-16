@@ -163,12 +163,13 @@ public class PayableControllerImpl implements PayableService {
     public Flux<MonthlyTotal> getMonthlySummary() {
         this.logger.info(String.format("%1$s()", "getMonthlySummary"));
 
-        return this.repository.findAll()
+        return this.repository
+                .findAll()
                 .map(x -> {
                     Date tmp = x.getTransactionDate().toDate();
                     return new MonthlyTotal(x.getPricePerUnit() * x.getQuantity(), tmp.getMonth(), tmp.getYear());
                 });
-         //TODO: groupby month and year
+        //TODO: groupby month and year
         //TODO: don't use depricated methods
     }
 }
