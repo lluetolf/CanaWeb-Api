@@ -1,6 +1,7 @@
 package ch.canaweb.api.controller;
 
 import ch.canaweb.api.core.Field.Field;
+import ch.canaweb.api.core.Field.IngenioId;
 import ch.canaweb.api.persistence.FieldRepository;
 import com.google.cloud.Timestamp;
 import net.datafaker.Faker;
@@ -47,7 +48,7 @@ public class FieldControllerTest {
                 this.faker.random().nextDouble(0, 100),
                 this.faker.random().nextDouble(0, 100),
                 Timestamp.now(),
-                Arrays.asList(this.faker.random().hex()),
+                Arrays.asList(new IngenioId(this.faker.random().hex(), 0)),
                 Timestamp.now()
         );
     }
@@ -155,7 +156,7 @@ public class FieldControllerTest {
                 .returnResult().getResponseBody();
 
         field.setCultivatedArea(999.99);
-        field.setIngenioId(Arrays.asList("NEW_INGENIO_ID", "NEW_INGENIO_ID2"));
+        field.setIngenioId(Arrays.asList(new IngenioId("NEW_INGENIO_ID", 0), new IngenioId("NEW_INGENIO_ID2", 0)));
 
         Field updatedField = this.webClient.put()
                 .uri("/api/field/")
@@ -169,8 +170,8 @@ public class FieldControllerTest {
 
         assert updatedField != null;
         assertTrue("CultivatedArea updated", 999.99 == updatedField.getCultivatedArea());
-        assertTrue("IngenioId updated", "NEW_INGENIO_ID".equals(updatedField.getIngenioId().get(0)));
-        assertTrue("IngenioId2 updated", "NEW_INGENIO_ID2".equals(updatedField.getIngenioId().get(1)));
+        assertTrue("IngenioId updated", "NEW_INGENIO_ID".equals(updatedField.getIngenioId().get(0).getIngenioId()));
+        assertTrue("IngenioId2 updated", "NEW_INGENIO_ID2".equals(updatedField.getIngenioId().get(1).getIngenioId()));
     }
 
     @Test

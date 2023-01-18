@@ -43,7 +43,7 @@ public class Field implements Serializable {
     @NotNull(message = "AcquisitionDate cannot be null.")
     private Timestamp acquisitionDate;
 
-    private List<String> ingenioId;
+    private List<IngenioId> ingenioId;
 
     @JsonSerialize(using = FireStoreSerializer.class)
     @JsonDeserialize(using = FireStoreDeserializer.class)
