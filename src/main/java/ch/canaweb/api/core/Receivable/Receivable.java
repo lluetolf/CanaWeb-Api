@@ -23,6 +23,6 @@ public class Receivable implements Serializable, Cloneable {
     private Phase liquidation;
 
     private Phase ajuste;
+
+    private String harvest;
 }
-
-

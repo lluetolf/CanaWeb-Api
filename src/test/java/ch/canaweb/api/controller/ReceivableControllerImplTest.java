@@ -19,7 +19,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @SpringBootTest
@@ -39,21 +39,24 @@ class ReceivableControllerImplTest {
 
     private List<Receivable> createBaseSet() {
         ArrayList<Receivable> receivables = new ArrayList<>();
-        
+
         receivables.add(generateReceivable());
 
         return receivables;
     }
 
     private Receivable generateReceivable() {
-        int secondsPerYear = 365*24*60*60;
+        int secondsPerYear = 365 * 24 * 60 * 60;
         long today = LocalDate.now().toEpochSecond(LocalTime.MIN, ZoneOffset.UTC) - secondsPerYear;
         String ingenioId = this.faker.random().hex();
+        int year = faker.random().nextInt(18, 25);
+        String harvest = year + "-" + (year + 1);
         return new Receivable(
                 this.faker.random().hex(),
-                new Phase(ingenioId, faker.random().nextDouble(50, 5000), faker.random().nextDouble(1, 5000),faker.random().nextDouble(100, 1000)),
-                new Phase(ingenioId, faker.random().nextDouble(50, 5000), faker.random().nextDouble(1, 5000),faker.random().nextDouble(100, 1000)),
-                new Phase(ingenioId, faker.random().nextDouble(50, 5000), faker.random().nextDouble(1, 5000),faker.random().nextDouble(100, 1000))
+                new Phase(ingenioId, faker.random().nextDouble(50, 5000), faker.random().nextDouble(1, 5000), faker.random().nextDouble(100, 1000)),
+                new Phase(ingenioId, faker.random().nextDouble(50, 5000), faker.random().nextDouble(1, 5000), faker.random().nextDouble(100, 1000)),
+                new Phase(ingenioId, faker.random().nextDouble(50, 5000), faker.random().nextDouble(1, 5000), faker.random().nextDouble(100, 1000)),
+                harvest
         );
     }
 
@@ -84,6 +87,7 @@ class ReceivableControllerImplTest {
                 .getResponseBody();
 
         var repoList = this.repository.findAll().collectList().block();
-        assertTrue(repoList.size() == receivables.size(), "Count of all receivables matche.");
+        assert repoList != null;
+        assertEquals(repoList.size(), receivables.size(), "Count of all receivables matche.");
     }
 }
