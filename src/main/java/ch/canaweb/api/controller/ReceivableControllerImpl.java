@@ -32,7 +32,7 @@ public class ReceivableControllerImpl implements ReceivableService {
 
     @Override
     public Mono<Receivable> updateDeductible(String receivableId, String phase, double amount) {
-        this.logger.info(String.format("%1$s(%2$s, %2$s, %2$d)", "updateDeductible", receivableId, phase, amount));
+        this.logger.info(String.format("%1$s(%2$s, %3$s, %4$s)", "updateDeductible", receivableId, phase, String.valueOf(amount)));
 
         return this.repository.findById(receivableId)
                 .flatMap(x -> {
