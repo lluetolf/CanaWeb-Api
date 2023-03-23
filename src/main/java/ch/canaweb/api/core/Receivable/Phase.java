@@ -18,6 +18,8 @@ public class Phase {
 
     private double total;
 
+    private double deductible;
+
     public Phase clone() throws CloneNotSupportedException {
         return (Phase) super.clone();
     }
